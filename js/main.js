@@ -13,17 +13,17 @@ function addToDo() {
     if (isValid()) {
         var item = getToDoItem();
         displayToDoItem(item);
-        getInputByID("title").value = "";
-        getInputByID("due-date").value = "";
+        getInput("title").value = "";
+        getInput("due-date").value = "";
     }
 }
 function isValid() {
     var validData = true;
-    if (getInputByID("title").value == "") {
+    if (getInput("title").value == "") {
         validData = false;
         displayError("title-error", "Title for task required");
     }
-    if (getInputByID("due-date").value == "") {
+    if (getInput("due-date").value == "") {
         validData = false;
         displayError("date-error", "Date for task required");
     }
@@ -35,9 +35,9 @@ function displayError(id, errorMessage) {
 }
 function getToDoItem() {
     var item = new ToDoItem();
-    item.title = getInputByID("title").value;
-    item.dueDate = new Date(getInputByID("due-date").value);
-    item.isCompleted = getInputByID("is-complete").checked;
+    item.title = getInput("title").value;
+    item.dueDate = new Date(getInput("due-date").value);
+    item.isCompleted = getInput("is-complete").checked;
     return item;
 }
 function displayToDoItem(item) {
@@ -79,6 +79,6 @@ function toggleComplete() {
 function getByID(id) {
     return document.getElementById(id);
 }
-function getInputByID(id) {
+function getInput(id) {
     return document.getElementById(id);
 }
