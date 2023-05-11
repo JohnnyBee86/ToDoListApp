@@ -23,9 +23,15 @@ function isValid() {
         validData = false;
         displayError("title-error", "Title for task required");
     }
-    if (getInputByID("due-date")) {
+    if (getInputByID("due-date").value == "") {
+        validData = false;
+        displayError("date-error", "Date for task required");
     }
     return validData;
+}
+function displayError(id, errorMessage) {
+    var errorSpan = getByID(id);
+    errorSpan.innerText = errorMessage;
 }
 function getToDoItem() {
     var item = new ToDoItem();
@@ -39,22 +45,36 @@ function displayToDoItem(item) {
     toDoText.innerText = item.title;
     var toDoDate = document.createElement("p");
     toDoDate.innerText = item.dueDate.toDateString();
-    var displayIncomplete = getByID("incomplete-items");
-    var displayCompleted = getByID("completed-items");
-    if (!item.isCompleted) {
-        displayIncomplete.appendChild(toDoText);
-        displayIncomplete.appendChild(toDoDate);
+    var itemDiv = document.createElement("div");
+    itemDiv.setAttribute("data-task-title", item.title);
+    itemDiv.onclick = toggleComplete;
+    itemDiv.classList.add("todo");
+    if (item.isCompleted) {
+        itemDiv.classList.add("completed");
     }
-    else
-        (item.isCompleted);
-    {
-        displayCompleted.appendChild(toDoText);
-        displayCompleted.appendChild(toDoDate);
+    itemDiv.appendChild(toDoText);
+    itemDiv.appendChild(toDoDate);
+    if (item.isCompleted) {
+        var displayCompleted = getByID("completed-items");
+        displayCompleted.appendChild(itemDiv);
+    }
+    else {
+        var displayIncomplete = getByID("incomplete-items");
+        displayIncomplete.appendChild(itemDiv);
     }
 }
-function displayError(id, errorMessage) {
-    var errorSpan = getByID(id);
-    errorSpan.innerText = errorMessage;
+function toggleComplete() {
+    var itemDiv = this;
+    if (itemDiv.classList.contains("completed")) {
+        itemDiv.classList.remove("completed");
+        var incompleteItems = getByID("incomplete-items");
+        incompleteItems.appendChild(itemDiv);
+    }
+    else {
+        itemDiv.classList.add("completed");
+        var completedItems = getByID("completed-items");
+        completedItems.appendChild(itemDiv);
+    }
 }
 function getByID(id) {
     return document.getElementById(id);

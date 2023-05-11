@@ -23,8 +23,8 @@ function addToDo() {
     if(isValid()){
         let item = getToDoItem();
         displayToDoItem(item);
-        getInputByID("title").value = "";
-        getInputByID("due-date").value = "";
+        getInput("title").value = "";
+        getInput("due-date").value = "";
     }
 }
 
@@ -34,15 +34,20 @@ function addToDo() {
 function isValid():boolean{
     let validData = true;
 
-    if (getInputByID("title").value == "") {
+    if (getInput("title").value == "") {
         validData = false;
         displayError("title-error", "Title for task required");
     }
-    if (getInputByID("due-date")) {
-
+    if (getInput("due-date").value == "") {
+        validData = false;
+        displayError("date-error", "Date for task required");
     }
 
     return validData;
+}
+function displayError(id:string, errorMessage:string):void{
+    let errorSpan = getByID(id);
+    errorSpan.innerText = errorMessage;
 }
 
 /**
@@ -51,9 +56,9 @@ function isValid():boolean{
  */
 function getToDoItem():ToDoItem{
     let item = new ToDoItem();
-    item.title = getInputByID("title").value;
-    item.dueDate = new Date(getInputByID("due-date").value);
-    item.isCompleted = getInputByID("is-complete").checked;
+    item.title = getInput("title").value;
+    item.dueDate = new Date(getInput("due-date").value);
+    item.isCompleted = getInput("is-complete").checked;
     return item;
 }
 
@@ -68,30 +73,50 @@ function displayToDoItem(item:ToDoItem):void{
     let toDoDate = document.createElement("p");
     toDoDate.innerText = item.dueDate.toDateString();
 
-    let displayIncomplete = getByID("incomplete-items");
-    let displayCompleted = getByID("completed-items");
+    let itemDiv = document.createElement("div");
+    itemDiv.setAttribute("data-task-title", item.title);
+    itemDiv.onclick = toggleComplete;
 
-    if (!item.isCompleted) {
-        displayIncomplete.appendChild(toDoText);
-        displayIncomplete.appendChild(toDoDate);     
+    itemDiv.classList.add("todo");
+    if(item.isCompleted) {
+        itemDiv.classList.add("completed");
     }
-    else (item.isCompleted) {
-        displayCompleted.appendChild(toDoText);
-        displayCompleted.appendChild(toDoDate);
+
+    itemDiv.appendChild(toDoText);
+    itemDiv.appendChild(toDoDate);
+
+    if (item.isCompleted) {
+        let displayCompleted = getByID("completed-items");
+        displayCompleted.appendChild(itemDiv);     
     }
+    else {
+        let displayIncomplete = getByID("incomplete-items");
+        displayIncomplete.appendChild(itemDiv);
+    }
+    
 }
 
 // Task: Allow user to mark item as completed
+function toggleComplete(){
+    let itemDiv = <HTMLElement>this;
 
-function displayError(id:string, errorMessage:string):void{
-    let errorSpan = getByID(id);
-    errorSpan.innerText = errorMessage;
+    if(itemDiv.classList.contains("completed")) {
+        itemDiv.classList.remove("completed");
+        let incompleteItems = getByID("incomplete-items");
+        incompleteItems.appendChild(itemDiv);
+    }
+    else {
+        itemDiv.classList.add("completed");
+        let completedItems = getByID("completed-items");
+        completedItems.appendChild(itemDiv);
+    }
 }
+
 
 function getByID(id:string):HTMLElement {
     return document.getElementById(id);
 }
 
-function getInputByID(id:string):HTMLInputElement {
+function getInput(id:string):HTMLInputElement {
     return <HTMLInputElement>document.getElementById(id);
 }

@@ -1,0 +1,21 @@
+span{
+    color: red;
+}
+.todo{
+    width: 20%;
+    box-sizing: border-box;
+    background-color: lightskyblue;
+    padding: .5em;
+    margin: 1em;
+    border-radius: .5em;
+}
+.todo h3{
+    margin: 0px;
+}
+.todo p{
+    margin: 0px;
+}
+.completed{
+    background-color: lightgreen;
+    opacity: 50%;
+}
