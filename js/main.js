@@ -15,6 +15,8 @@ function addToDo() {
         displayToDoItem(item);
         getInput("title").value = "";
         getInput("due-date").value = "";
+        getByID("title-error").innerText = "*";
+        getByID("date-error").innerText = "*";
     }
 }
 function isValid() {
