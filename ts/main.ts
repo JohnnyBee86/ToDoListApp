@@ -23,11 +23,16 @@ function addToDo() {
     if(isValid()){
         let item = getToDoItem();
         displayToDoItem(item);
-        getInput("title").value = "";
-        getInput("due-date").value = "";
-        getByID("title-error").innerText = "*";
-        getByID("date-error").innerText = "*";
+        resetInputArea();
     }
+}
+
+function resetInputArea() {
+    getInput("title").value = "";
+    getInput("due-date").value = "";
+    getByID("title-error").innerText = "*";
+    getByID("date-error").innerText = "*";
+    getInput("is-complete").checked = false;
 }
 
 /**
