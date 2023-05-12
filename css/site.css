@@ -8,6 +8,7 @@ span{
     padding: .5em;
     margin: 1em;
     border-radius: .5em;
+    cursor: pointer;
 }
 .todo h3{
     margin: 0px;
@@ -16,6 +17,14 @@ span{
     margin: 0px;
 }
 .completed{
-    background-color: lightgreen;
+    background-color: lightgray;
     opacity: 50%;
+    text-decoration: line-through;
+}
+#completed-items{
+    border: .2em solid lightgreen;
+}
+#incomplete-items{
+    border: .1em solid black;
+    margin-bottom: 1em;
 }
