@@ -13,7 +13,7 @@ window.onload = function() {
     let addItem = getByID("add");
     addItem.onclick = addToDo;
 
-    loadSavedItem();
+    loadSavedItems();
 }
 
 // main
@@ -118,42 +118,68 @@ function toggleComplete(){
         let completedItems = getByID("completed-items");
         completedItems.appendChild(itemDiv);
     }
+
+    let allToDos = getToDoItems();
+    let currentTodoTitle = itemDiv.getAttribute("data-task-title");
+    for(let i = 0; i < allToDos.length; i++){
+        let nextTodo = allToDos[i]; // Get ToDo out of array
+        if(nextTodo.title == currentTodoTitle){
+            nextTodo.isCompleted = !nextTodo.isCompleted; // Flip complete/incomplete
+        }
+    }
+
+    saveAllToDos(allToDos);
 }
 
 /**
- * Save a ToDo item in local storage
+ * Clear current ToDos and generate new save
+ * @param allToDos new list to save
+ */
+function saveAllToDos(allToDos:ToDoItem[]) {
+    localStorage.setItem(todokey, ""); // delete current save
+    let allToDosString = JSON.stringify(allToDos); // generate new string
+    localStorage.setItem(todokey, allToDosString);
+}
+
+/**
+ * Save all ToDo items in local storage
  * @param item A ToDo item to be saved
  */
 function saveToDo(item:ToDoItem):void {
-    // convert ToDo item to json string
-    let itemString = JSON.stringify(item);
+    let currItems = getToDoItems();
+    if (currItems == null) { // no items found
+        currItems = new Array();
+    }
+    currItems.push(item); // add the new item to the curr item list
 
-    // save string to local storage
-    localStorage.setItem(todokey, itemString);
+    let currItemsString = JSON.stringify(currItems);
+    localStorage.setItem(todokey, currItemsString);
 }
 
 /**
- * Read a ToDo item from local storage
+ * Get all stored ToDo items from local storage
  * or return null if none are found
  */
-function getToDo():ToDoItem {
+function getToDoItems():ToDoItem[] {
     // retrieve ToDo item from local storage
     let itemString = localStorage.getItem(todokey);
 
     // change from string to item
-    let item:ToDoItem = JSON.parse(itemString);
+    let item:ToDoItem[] = JSON.parse(itemString);
 
     return item;
 }
 
 /**
- * Load a ToDo item from local storage
- * or return null if none are found
+ * Load all ToDo items from local storage
+ * or nothing if none are found
  */
-function loadSavedItem() {
-    let item = getToDo(); // read from storage
-    if (item != null) {
-        displayToDoItem(item);
+function loadSavedItems() {
+    let itemArray = getToDoItems(); // read from storage
+    if (itemArray != null) {
+        for (let i = 0; i < itemArray.length; i++) {
+            displayToDoItem(itemArray[i]);
+        }
     }
     
 }

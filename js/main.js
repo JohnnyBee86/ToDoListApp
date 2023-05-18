@@ -9,7 +9,7 @@ var ToDoItem = (function () {
 window.onload = function () {
     var addItem = getByID("add");
     addItem.onclick = addToDo;
-    loadSavedItem();
+    loadSavedItems();
 };
 function addToDo() {
     if (isValid()) {
@@ -85,20 +85,41 @@ function toggleComplete() {
         var completedItems = getByID("completed-items");
         completedItems.appendChild(itemDiv);
     }
+    var allToDos = getToDoItems();
+    var currentTodoTitle = itemDiv.getAttribute("data-task-title");
+    for (var i = 0; i < allToDos.length; i++) {
+        var nextTodo = allToDos[i];
+        if (nextTodo.title == currentTodoTitle) {
+            nextTodo.isCompleted = !nextTodo.isCompleted;
+        }
+    }
+    saveAllToDos(allToDos);
+}
+function saveAllToDos(allToDos) {
+    localStorage.setItem(todokey, "");
+    var allToDosString = JSON.stringify(allToDos);
+    localStorage.setItem(todokey, allToDosString);
 }
 function saveToDo(item) {
-    var itemString = JSON.stringify(item);
-    localStorage.setItem(todokey, itemString);
+    var currItems = getToDoItems();
+    if (currItems == null) {
+        currItems = new Array();
+    }
+    currItems.push(item);
+    var currItemsString = JSON.stringify(currItems);
+    localStorage.setItem(todokey, currItemsString);
 }
-function getToDo() {
+function getToDoItems() {
     var itemString = localStorage.getItem(todokey);
     var item = JSON.parse(itemString);
     return item;
 }
-function loadSavedItem() {
-    var item = getToDo();
-    if (item != null) {
-        displayToDoItem(item);
+function loadSavedItems() {
+    var itemArray = getToDoItems();
+    if (itemArray != null) {
+        for (var i = 0; i < itemArray.length; i++) {
+            displayToDoItem(itemArray[i]);
+        }
     }
 }
 function getByID(id) {
