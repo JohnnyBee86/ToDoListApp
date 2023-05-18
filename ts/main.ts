@@ -1,5 +1,6 @@
 // @ts-ignore: Ignoring issue with js-datepicker lack of intellisense
 const picker = datepicker("#due-date");
+const todokey = "todo";
 picker.setMin(new Date()); // Set to today's date
 
 class ToDoItem{
@@ -11,13 +12,17 @@ class ToDoItem{
 window.onload = function() {
     let addItem = getByID("add");
     addItem.onclick = addToDo;
+
+    loadSavedItem();
 }
 
+// main
 function addToDo() {
     if(isValid()){
         let item = getToDoItem();
         displayToDoItem(item);
         resetInputArea();
+        saveToDo(item);
     }
 }
 
@@ -72,7 +77,9 @@ function displayToDoItem(item:ToDoItem):void{
     toDoText.innerText = item.title;
 
     let toDoDate = document.createElement("p");
-    toDoDate.innerText = item.dueDate.toDateString();
+    //toDoDate.innerText = item.dueDate.toDateString();
+    let dueDate = new Date(item.dueDate.toString());
+    toDoDate.innerText = dueDate.toDateString();
 
     let itemDiv = document.createElement("div");
     itemDiv.setAttribute("data-task-title", item.title);
@@ -111,6 +118,44 @@ function toggleComplete(){
         let completedItems = getByID("completed-items");
         completedItems.appendChild(itemDiv);
     }
+}
+
+/**
+ * Save a ToDo item in local storage
+ * @param item A ToDo item to be saved
+ */
+function saveToDo(item:ToDoItem):void {
+    // convert ToDo item to json string
+    let itemString = JSON.stringify(item);
+
+    // save string to local storage
+    localStorage.setItem(todokey, itemString);
+}
+
+/**
+ * Read a ToDo item from local storage
+ * or return null if none are found
+ */
+function getToDo():ToDoItem {
+    // retrieve ToDo item from local storage
+    let itemString = localStorage.getItem(todokey);
+
+    // change from string to item
+    let item:ToDoItem = JSON.parse(itemString);
+
+    return item;
+}
+
+/**
+ * Load a ToDo item from local storage
+ * or return null if none are found
+ */
+function loadSavedItem() {
+    let item = getToDo(); // read from storage
+    if (item != null) {
+        displayToDoItem(item);
+    }
+    
 }
 
 
