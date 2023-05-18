@@ -7,12 +7,6 @@ class ToDoItem{
     dueDate:Date;
     isCompleted:boolean;
 }
-/* Test Code if needed
-let item = new ToDoItem();
-item.title = "Testing";
-item.dueDate = new Date(2023, 8, 2);
-item.isCompleted = false;
-*/
 
 window.onload = function() {
     let addItem = getByID("add");
